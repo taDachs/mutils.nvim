@@ -16,6 +16,11 @@ function util.strsplit(inputstr, sep)
   return t
 end
 
+
+---------------------------------------------------------------------------------------------------
+------------------------------------ FILE STUFF ---------------------------------------------------
+---------------------------------------------------------------------------------------------------
+
 -- ignores hidden paths
 function util.find_files_in_dir(path, type)
   local find_command = "find " .. path .. " -not -path '*/.*/*'"
@@ -33,6 +38,17 @@ function util.get_basename(path)
   local regex = "^/?.*/(.*)$"
   local basename = string.match(path, regex)
   return basename
+end
+
+function util.get_dirname(path)
+  local regex = "^(/?.*/).*$"
+  local dirname = string.match(path, regex)
+  return dirname
+end
+
+function util.is_subdir(child, parent)
+  child = string.sub(child, 1, #parent)
+  return parent == child
 end
 
 function util.len(table)
@@ -67,6 +83,21 @@ function util.relative_path(path, parent)
   for i, _ in ipairs(parent_split) do len_parent = i end
   local relative_split = { unpack(path_split, len_parent + 1) }
   return table.concat(relative_split, "/")
+end
+
+function util.update_table(a, b)
+  for k,v in pairs(b) do
+    if type(v) == "table" then
+        if type(a[k] or false) == "table" then
+            util.update_table(a[k] or {}, b[k] or {})
+        else
+            a[k] = v
+        end
+    else
+        a[k] = v
+    end
+  end
+  return a
 end
 
 return util
