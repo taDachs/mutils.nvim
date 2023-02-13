@@ -51,6 +51,12 @@ function util.is_subdir(child, parent)
   return parent == child
 end
 
+function util.run_command(command)
+  local output = io.popen(command):read("*all")
+  output = string.gsub(output, "\n$", "")
+  return output
+end
+
 function util.len(table)
   local len = 0
   for _, _ in pairs(table) do
