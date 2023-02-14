@@ -51,6 +51,14 @@ function util.is_subdir(child, parent)
   return parent == child
 end
 
+function util.read_file(path)
+  local file = io.open(path, "rb") -- r read mode and b binary mode
+  if not file then return nil end
+  local content = file:read "*a" -- *a or *all reads the whole file
+  file:close()
+  return content
+end
+
 function util.run_command(command)
   local output = io.popen(command):read("*all")
   output = string.gsub(output, "\n$", "")
@@ -80,6 +88,17 @@ function util.map(table, f)
   end
   return mapped
 end
+
+function util.filter(table, f)
+  local filtered = {}
+  for k, v in pairs(table) do
+    if f(v) then
+      filtered[k] = v
+    end
+  end
+  return filtered
+end
+
 
 -- both must me absolute
 function util.relative_path(path, parent)
